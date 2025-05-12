@@ -84,6 +84,7 @@ if client.connect("localhost", 1883, 60) != 0:
     print("Couldn't connect to the mqtt broker")
     sys.exit(1)
 
-client.publish("test_topic", "Hi, paho mqtt client works fine!", 0)
+#Publish a message at the test topic
+client.publish("test", "Hi, paho mqtt client works fine!", 0)
 client.disconnect()
 >>>>>>> a3ef1b8 (Initial commit with setup files)

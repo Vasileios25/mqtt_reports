@@ -95,21 +95,42 @@ if __name__ == '__main__':
     
 =======
 
-def message_handling(client, userdata, msg):
+
+#Callback function which will call when a message received
+def on_message(client, userdata, msg):
     print(f"{msg.topic}: {msg.payload.decode()}")
+    message_count = 1
+    account_id = []
+    while (message_count <3):
+        print(message_count)
+        
+        message_count += 1
+        continue
+        
+    return message_count
+    if message_count == 3:
+        print(f"we receive all the {message_count} reports!")
+            
+            
 
 def on_connect(client, userdata, flags, rc):
     print(f"Connected with result code {rc}")
 
+
+#MQTT client initialization to establish connection to broker
 client = paho.Client()
-client.on_message = message_handling
+
+client.on_message = on_message
+
 client.on_connect = on_connect  # Handle connection
+
 
 if client.connect("localhost", 1883, 60) != 0:
     print("Couldn't connect to the mqtt broker")
     sys.exit(1)
 
-client.subscribe("test_topic")
+
+client.subscribe("test")
 
 try:
     print("Press CTRL+C to exit...")
