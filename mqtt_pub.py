@@ -1,6 +1,5 @@
 import sys
 import paho.mqtt.client as paho
-<<<<<<< HEAD
 import ssl
 import time
 import random
@@ -76,15 +75,3 @@ if __name__ == '__main__':
 # Disconnect
 #client.loop_stop()
 #client.disconnect()
-=======
-
-client = paho.Client()
-
-if client.connect("localhost", 1883, 60) != 0:
-    print("Couldn't connect to the mqtt broker")
-    sys.exit(1)
-
-#Publish a message at the test topic
-client.publish("test", "Hi, paho mqtt client works fine!", 0)
-client.disconnect()
->>>>>>> a3ef1b8 (Initial commit with setup files)

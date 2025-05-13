@@ -1,6 +1,7 @@
 import sys
 import paho.mqtt.client as paho
 <<<<<<< HEAD
+<<<<<<< HEAD
 import ssl
 import time
 import random
@@ -11,11 +12,17 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from dotenv import load_dotenv
 load_dotenv()
+=======
+import ssl
+import time
+import random
+>>>>>>> 6c45725 (add function, connection with creds and more)
 
 BROKER = "mqtt.sparkworks.cloud"
 PORT = 8883
 USERNAME = "admin"
 PASSWORD = "public"
+<<<<<<< HEAD
 MESSAGE = "hola como estas"
 TOPIC = "test"
 
@@ -94,44 +101,62 @@ if __name__ == '__main__':
     run()
     
 =======
+=======
+MESSAGE = "hello world"
+TOPIC = "test"
+# Generate a Client ID with the subscribe prefix.
+CLIENT_ID = f'subscribe-{random.randint(0, 100)}'
+>>>>>>> 6c45725 (add function, connection with creds and more)
 
 
-#Callback function which will call when a message received
-def on_message(client, userdata, msg):
-    print(f"{msg.topic}: {msg.payload.decode()}")
-    message_count = 1
-    account_id = []
-    while (message_count <3):
-        print(message_count)
-        
-        message_count += 1
-        continue
-        
-    return message_count
-    if message_count == 3:
-        print(f"we receive all the {message_count} reports!")
-            
-            
-
+# Callback function when connection is established and subscribe to the topic
 def on_connect(client, userdata, flags, rc):
-    print(f"Connected with result code {rc}")
+    if rc == 0:
+        print(f"Connected with result code {rc}")
+        #client.subscribe("test")
+        #print("Subscribed to topic: test")
+    else:
+        print(f" Connection failed with result code{rc}")
+
+def connect_mqtt():
+    client = paho.Client(CLIENT_ID) #MQTT client initialization to establish connection to broker
+    client.username_pw_set(USERNAME, PASSWORD) #Authentication to  broker with username and password
+    client.tls_set(cert_reqs=ssl.CERT_NONE, tls_version=ssl.PROTOCOL_TLS) # Configure TLS/SSL with no certificate verification for self-signed certificates
+    client.tls_insecure_set(True) # Skip hostname verification for testing
+    client.on_connect = on_connect #Set callbacks
+
+    if client.connect(BROKER, PORT, 60) != 0:
+        print("Couldn't connect to the MQTT broker")
+        sys.exit(1)
+
+    return client
 
 
-#MQTT client initialization to establish connection to broker
-client = paho.Client()
+# Subscribe and callback when message is received
+def subscribe(client: paho):
+    def on_message(client, userdata, msg):
+        payload = json.dumps(msg)
+        print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 
-client.on_message = on_message
-
-client.on_connect = on_connect  # Handle connection
-
-
-if client.connect("localhost", 1883, 60) != 0:
-    print("Couldn't connect to the mqtt broker")
-    sys.exit(1)
+    client.subscribe(TOPIC)
+    client.on_message = on_message
 
 
-client.subscribe("test")
+# Start the loop to listen for incoming messages
+def run():
+    client = connect_mqtt()
+    try:
+        print("Press CTRL+C to exit...")
+        client.loop_forever()
+    except Exception as e:
+        print(f"Caught an Exception: {e}")
+    finally:
+        print("Disconnecting from the MQTT broker")
+        client.disconnect()
 
+
+
+<<<<<<< HEAD
 try:
     print("Press CTRL+C to exit...")
     client.loop_forever()
@@ -141,3 +166,5 @@ finally:
     print("Disconnecting from the MQTT broker")
     client.disconnect()
 >>>>>>> a3ef1b8 (Initial commit with setup files)
+=======
+>>>>>>> 6c45725 (add function, connection with creds and more)
