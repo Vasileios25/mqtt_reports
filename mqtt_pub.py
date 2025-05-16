@@ -8,17 +8,7 @@ BROKER = "mqtt.sparkworks.cloud"
 PORT = 8883
 USERNAME = "admin"
 PASSWORD = "public"
-<<<<<<< HEAD
-<<<<<<< HEAD
 MESSAGE = "hola como estas"
-=======
-MESSAGE = "hello world"
->>>>>>> 5a9bb8a (fix some issues with topic, throws errors with cliend id so remove it for now)
-=======
-
-MESSAGE = "hola como estas"
-
->>>>>>> c3f31b6 (Initial push with secure Slack token handling)
 CLIENT_ID = f'python-mqtt-{random.randint(0, 800)}'
 TOPIC = "test"
 
@@ -51,18 +41,7 @@ def publish(client):
     msg_count = 1
     while True:
         time.sleep(1)
-<<<<<<< HEAD
-<<<<<<< HEAD
         msg = f"message {MESSAGE}: {msg_count}"
-=======
-        msg = f"messages: {msg_count}"
->>>>>>> 5a9bb8a (fix some issues with topic, throws errors with cliend id so remove it for now)
-=======
-        msg = f"messages: {msg_count}"
-=======
-        msg = f"message {MESSAGE}: {msg_count}"
->>>>>>> 0ab77c0 (Initial push with secure Slack token handling)
->>>>>>> c3f31b6 (Initial push with secure Slack token handling)
         result = client.publish(TOPIC, msg)
         # result: [0, 1]
         status = result[0]
