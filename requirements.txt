@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 -e file:///home/vasileios-siaploulis/mqtt/paho.mqtt.python
+=======
+paho-mqtt==2.1.0
+>>>>>>> c3f31b6 (Initial push with secure Slack token handling)
 pip==24.0
 slack-sdk==3.25.0
