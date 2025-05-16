@@ -6,6 +6,7 @@ import ssl
 import time
 import random
 import json  # Importing json module
+<<<<<<< HEAD
 import argparse
 import os
 from slack_sdk import WebClient
@@ -17,6 +18,8 @@ import ssl
 import time
 import random
 >>>>>>> 6c45725 (add function, connection with creds and more)
+=======
+>>>>>>> b12a60e (client.subscribe(TOPIC) moved inside on_connect(), so the subscription happens after a successful connection,on_message() callback added for receiving and printing messages when they arrive.)
 
 BROKER = "mqtt.sparkworks.cloud"
 PORT = 8883
@@ -113,33 +116,30 @@ CLIENT_ID = f'subscribe-{random.randint(0, 100)}'
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print(f"Connected with result code {rc}")
-        #client.subscribe("test")
-        #print("Subscribed to topic: test")
+        client.subscribe(TOPIC)  # Subscribe to the topic here
+        print(f"Subscribed to topic: {TOPIC}")
     else:
-        print(f" Connection failed with result code{rc}")
+        print(f"Connection failed with result code {rc}")
+
+# Callback function when a message is received
+def on_message(client, userdata, msg):
+    payload = json.loads(msg.payload.decode())  # Assuming payload is JSON
+    print(f"Received `{payload}` from `{msg.topic}` topic")
+
 
 def connect_mqtt():
-    client = paho.Client(CLIENT_ID) #MQTT client initialization to establish connection to broker
-    client.username_pw_set(USERNAME, PASSWORD) #Authentication to  broker with username and password
-    client.tls_set(cert_reqs=ssl.CERT_NONE, tls_version=ssl.PROTOCOL_TLS) # Configure TLS/SSL with no certificate verification for self-signed certificates
-    client.tls_insecure_set(True) # Skip hostname verification for testing
-    client.on_connect = on_connect #Set callbacks
+    client = paho.Client()  # MQTT client initialization to establish connection to broker
+    client.username_pw_set(USERNAME, PASSWORD)  # Authentication to broker with username and password
+    client.tls_set(cert_reqs=ssl.CERT_NONE, tls_version=ssl.PROTOCOL_TLS)  # Configure TLS/SSL with no certificate verification for self-signed certificates
+    client.tls_insecure_set(True)  # Skip hostname verification for testing
+    client.on_connect = on_connect  # Set on_connect callback
+    client.on_message = on_message  # Set on_message callback
 
     if client.connect(BROKER, PORT, 60) != 0:
         print("Couldn't connect to the MQTT broker")
         sys.exit(1)
 
     return client
-
-
-# Subscribe and callback when message is received
-def subscribe(client: paho):
-    def on_message(client, userdata, msg):
-        payload = json.dumps(msg)
-        print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-
-    client.subscribe(TOPIC)
-    client.on_message = on_message
 
 
 # Start the loop to listen for incoming messages
@@ -153,6 +153,10 @@ def run():
     finally:
         print("Disconnecting from the MQTT broker")
         client.disconnect()
+
+
+if __name__ == '__main__':
+    run()
 
 
 
